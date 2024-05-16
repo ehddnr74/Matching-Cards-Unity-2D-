@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +16,33 @@ public class GameManager : MonoBehaviour
     private bool isMatching = false;
 
     private bool ShowAgain = true;
+    private bool isGameOver = false;
+
+    [SerializeField]
+    private GameObject gameOverUI;
+
+    [SerializeField]
+    private TextMeshProUGUI timeText;
+
+    [SerializeField]
+    private TextMeshProUGUI gameOverText;
+
+
+    [SerializeField]
+    private TextMeshProUGUI clearText;
+
+    [SerializeField]
+    private TextMeshProUGUI clearTimeText;
+
+    [SerializeField]
+    private Slider timeSlider;
+    [SerializeField]
+    private float timeLimit = 60f;
+
+    private float currentTime;
+    private float startTime;
+
+    private int matchCnt = 0;
 
     public void SetShowing(bool Showing) { ShowAgain = Showing; }
     public bool GetShowing() { return ShowAgain; }
@@ -32,14 +62,23 @@ public class GameManager : MonoBehaviour
         Board board = FindObjectOfType<Board>();
         Cards = board.GetCards();
 
+        currentTime = timeLimit;
+        SetTimeText();
         StartCoroutine(FlipCard());
+    }
+
+    void SetTimeText()
+    {
+        int minutes = Mathf.FloorToInt(currentTime / 60);
+        int seconds = Mathf.FloorToInt(currentTime % 60);
+        timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     private IEnumerator FlipCard()
     {
         isFlipping = true;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
         FlipCards();
         yield return new WaitForSeconds(3f);
         FlipCards();
@@ -48,6 +87,27 @@ public class GameManager : MonoBehaviour
 
         isFlipping = false;
         ShowAgain = false;
+
+        yield return StartCoroutine(Timer());
+    }
+
+    private IEnumerator Timer()
+    {
+        while(currentTime >= 0 && !isGameOver)
+        {
+            if (currentTime <= 0.1f && !isGameOver)
+            {
+                GameOver(true);
+                break;
+            }
+            currentTime -= Time.deltaTime;
+            timeSlider.value = currentTime / timeLimit;
+            SetTimeText();
+            yield return null;
+        }
+
+
+
     }
 
     public void FlipCards()
@@ -121,7 +181,7 @@ public class GameManager : MonoBehaviour
 
     public void ClickCard(Card card)
     {
-        if(isFlipping)
+        if(isFlipping || isGameOver)
         {
             return;
         }
@@ -143,10 +203,15 @@ public class GameManager : MonoBehaviour
         {
             card1.SetMatched();
             card2.SetMatched();
+
+            matchCnt++;
+            if (matchCnt == Cards.Count / 2)
+            {
+                GameOver(false);
+            }
         }
         else
         {
-            Debug.Log("Different Card");
             yield return new WaitForSeconds(1f);
 
             card1.FlipCard();
@@ -159,5 +224,45 @@ public class GameManager : MonoBehaviour
         flippedCard = null;
         isMatching = false;
     }
-        
+
+    void GameOver(bool gameover)
+    {
+        if (!isGameOver)
+        {
+            isGameOver = true;
+
+            StopCoroutine(Timer());
+
+            if (gameover)
+                gameOverText.SetText("Fail");
+            else
+            {
+                clearText.SetText("Clear Time : ");
+
+                float elapsedTime = timeLimit - currentTime;
+                int minutes = Mathf.FloorToInt(elapsedTime / 60);
+                int seconds = Mathf.FloorToInt(elapsedTime % 60);
+
+                clearTimeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+                gameOverText.SetText("Clear");
+
+                clearText.gameObject.SetActive(true);
+                clearTimeText.gameObject.SetActive(true);
+            }
+      
+
+            Invoke("ShowGameOverUI", 1f);
+        }
+    }
+
+
+    void ShowGameOverUI()
+    {
+        gameOverUI.SetActive(true);
+    }
+
+    public void ReTry()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
 }
