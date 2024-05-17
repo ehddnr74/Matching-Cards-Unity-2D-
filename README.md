@@ -1,2 +1,2 @@
-# Matching-Cards-Unity-2D-
-Find the same picture using Unity 2D
+어렸을 적 메이플스토리 미니게임 중 같은그림찾기 게임을 너무 좋아했습니다.
+한번 똑같이 구현해 자주 플레이 하고싶어서 만들게 되었습니다.  
