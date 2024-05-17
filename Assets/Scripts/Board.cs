@@ -10,7 +10,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private Sprite[] cardSprites;
 
-    private List<int> cardIDList = new List<int>();
+    private List<int> cardIDList = new List<int>(); 
     private List<Card> cardList = new List<Card>();
 
     // Start is called before the first frame update
@@ -73,9 +73,9 @@ public class Board : MonoBehaviour
                GameObject cardObj = Instantiate(cardPrefab, pos, Quaternion.identity);
                Card card = cardObj.GetComponent<Card>();
                int cardID = cardIDList[cardIndex++];
-               card.SetCardID(cardID);
+               card.SetCardID(cardID);// 카드에 ID 부여 
                card.SetMonsterSprite(cardSprites[cardID]); // 카드ID에 맞는 스프라이트로 설정
-               cardList.Add(card);
+               cardList.Add(card); 
             }
         }
     }

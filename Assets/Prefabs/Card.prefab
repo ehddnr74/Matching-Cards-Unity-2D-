@@ -101,6 +101,7 @@ MonoBehaviour:
   cardRenderer: {fileID: 3224199922547036295}
   monsterSprite: {fileID: 21300000, guid: 106a79af33616de46940f8096164b9e9, type: 3}
   backSprite: {fileID: 21300000, guid: dcbe8f26955892f45a6c5e3531ee4d67, type: 3}
+  cardID: 0
 --- !u!61 &8293803745376166492
 BoxCollider2D:
   m_ObjectHideFlags: 0

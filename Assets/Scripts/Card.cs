@@ -8,10 +8,10 @@ public class Card : MonoBehaviour
     private SpriteRenderer cardRenderer;
 
     [SerializeField]
-    private Sprite monsterSprite;
+    private Sprite monsterSprite; //카드 앞면 
 
     [SerializeField]
-    private Sprite backSprite;
+    private Sprite backSprite; //카드 뒷면
 
     // isFlipped가 false라면 카드 뒷면을 보여주고 true라면 카드 앞면을 보여준다.
     private bool isFlipped = false;
@@ -23,6 +23,7 @@ public class Card : MonoBehaviour
     // 카드를 뒤집는 도중인지 체크하기 위한 변수 
     private bool isFlipping = false;
 
+    // 카드 ID 
     public int cardID;
 
     public bool GetIsMatched() { return isMatched; }
@@ -33,7 +34,7 @@ public class Card : MonoBehaviour
 
     public void FlipCard()
     {
-        // Start the flip animation coroutine
+        // 카드 뒤집기 코루틴 
         StartCoroutine(FlipCardAnimation());
     }
 
